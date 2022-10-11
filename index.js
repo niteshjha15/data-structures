@@ -92,6 +92,54 @@ class LinkedList {
     }
   }
 
+  removeByValue(value){
+    if(value===this.head.node){
+      let temp = this.head.node
+      this.head = this.head.next;
+      return temp
+    }
+    let curr = this.head;
+    while(curr.next && curr.next.node !==value){
+       curr = curr.next
+    }
+    let removedNode = curr.next;
+    if(removedNode){
+      curr.next = removedNode.next;
+      return removedNode.node
+    }
+    return null
+   
+  }
+
+  searchValue(value){
+    if(this.isEmpty()){
+      return null
+    }
+    let i = 0;
+    let curr = this.head;
+    while(curr){
+      if(curr.node===value){
+        return i
+      }
+       curr = curr.next;
+       i++
+    }
+    return -1;
+  }
+
+  reverseList(){
+    let curr = this.head;
+    let prev = null;
+
+    while(curr){
+      let next = curr.next;
+      curr.next = prev;
+      prev=curr;
+      curr = next;    
+    }
+    this.head = prev;
+  }
+
   print() {
     let curr = this.head;
     let values = "";
@@ -113,5 +161,5 @@ list.append(50)
 list.append(60)
 list.append(70)
 console.log("list", list.print());
-console.log('removed item',list.removeFrom(7))
+list.reverseList()
 console.log("list", list.print());
