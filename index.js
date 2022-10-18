@@ -1,165 +1,83 @@
-// This class instance creats a new head opject with value and next e.g. {node:10,
-//next==null}
+// this is binary search tree implementation
+// A binary search tree has following charecterstics:
+// 1.) Each node can have at most 2 child nodes i.e. not more than 2 child nodes.
+// 2.) If the added new node is less then the parent node then it will be added to left edge of parent node and
+//     if the new node is greate than parent node than it will be added to right edge.
+// Check "BinarySearchTree.drawio" file.
+
+// this will create a new node refer to diagram for refrence.
 class Node {
   constructor(value) {
-    this.node = value;
-    this.next = null;
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-class LinkedList {
+class DataTree {
   constructor() {
-    this.size = 0;
-    this.head = null;
+    this.root = null;
   }
 
   isEmpty() {
-    return this.size === 0 ? true : false;
+    return this.root === null;
   }
 
-  getSize() {
-    return this.size;
-  }
-
-  append(value) {
-    let newNode = new Node(value);
-    if (this.isEmpty()) {
-      this.head = newNode;
-    }else{
-        let curr = this.head;
-        while (curr.next) {
-          curr = curr.next;
-        }
-        curr.next = newNode;
-        
+  insertNode(root, newNode) {
+    // checks if newNode value is less then root node.
+    if (root.value > newNode.value) {
+      // if new node is small than root node we need to focus on left side of tree as per BST rule so we
+      // check if root node is the leaf node(i.e. root node has no left child).
+      // if the root has no left child we insert the new node to left of root.
+      if (root.left === null) {
+        root.left = newNode;
+      } else {
+        // If the root's left child is not null i.e. we need to reach last left leaf i.e. the last left node in tree
+        // so we can insert this new node to the left of last node.
+        // we do so by recursively calling the same function passing in the left child's as a root.
+        this.insertNode(root.left, newNode);
+      }
+      // same as above but this time we check for greater value and focus on right side
+    } else if (root.value < newNode.value) {
+      if (root.right === null) {
+        root.right = newNode;
+      } else {
+        this.insertNode(root.right, newNode);
+      }
     }
-    this.size++;
-    
   }
 
-  prepend(value) {
+  insert(value) {
     const newNode = new Node(value);
     if (this.isEmpty()) {
-      this.head = newNode;
+      this.root = newNode;
     } else {
-      newNode.next = this.head;
-      this.head = newNode;
-    }
-    this.size++;
-  }
-
-  insert(value, index) {
-    if (index < 0) {
-      return;
-    }
-    if (index === 0) {
-      this.prepend(value);
-    } else if (index > 0 && this.size > index) {
-      let newNode = new Node(value);
-      let curr = this.head;
-      for (let i = 0; i < index - 1; i++) {
-        curr = curr.next;
-      }
-      newNode.next = curr.next;
-      curr.next = newNode;
-      this.size++;
+      this.insertNode(this.root, newNode);
     }
   }
 
-  removeFrom(index) {
-    let removedNode;
-    if (index >= this.size || index < 0) {
-      return null;
-    } else if (index === 0) {
-      let refrenceNode;
-      removedNode = this.head;
-      refrenceNode = this.head.next;
-      this.head = refrenceNode;
-      this.size--;
-      return removedNode.node;
+  search(root, value) {
+    if (this.isEmpty()) return false;
+    if (!root) {
+      return false;
     } else {
-      let removedNode;
-      let refrenceNode;
-      let curr = this.head;
-      for (let i = 0; i < index - 1; i++) {
-        curr = curr.next;
+      if (root.value === value) {
+        return true;
       }
-      removedNode = curr.next;
-      refrenceNode = removedNode.next;
-      curr.next = refrenceNode;
-      this.size--;
-      return removedNode.node;
-    }
-  }
-
-  removeByValue(value){
-    if(value===this.head.node){
-      let temp = this.head.node
-      this.head = this.head.next;
-      return temp
-    }
-    let curr = this.head;
-    while(curr.next && curr.next.node !==value){
-       curr = curr.next
-    }
-    let removedNode = curr.next;
-    if(removedNode){
-      curr.next = removedNode.next;
-      return removedNode.node
-    }
-    return null
-   
-  }
-
-  searchValue(value){
-    if(this.isEmpty()){
-      return null
-    }
-    let i = 0;
-    let curr = this.head;
-    while(curr){
-      if(curr.node===value){
-        return i
+      if (root.value > value) {
+        return this.search(root.left, value);
       }
-       curr = curr.next;
-       i++
+      if (root.value < value) {
+        return this.search(root.right, value);
+      }
     }
-    return -1;
-  }
-
-  reverseList(){
-    let curr = this.head;
-    let prev = null;
-
-    while(curr){
-      let next = curr.next;
-      curr.next = prev;
-      prev=curr;
-      curr = next;    
-    }
-    this.head = prev;
-  }
-
-  print() {
-    let curr = this.head;
-    let values = "";
-    while (curr) {
-      values += ` ${curr.node}`;
-      curr = curr.next;
-    }
-    return values;
   }
 }
 
-const list = new LinkedList();
-list.append(10);
-list.append(20);
-list.append(30);
-list.prepend(5)
-list.append(40)
-list.append(50)
-list.append(60)
-list.append(70)
-console.log("list", list.print());
-list.reverseList()
-console.log("list", list.print());
+const newTree = new DataTree();
+console.log("is tree empty", newTree.isEmpty());
+newTree.insert(10);
+newTree.insert(20);
+newTree.insert(30);
+console.log("is tree empty", newTree.isEmpty());
+console.log("value", newTree.search(newTree.root,10));
